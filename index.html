@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Simple HTML with Jefdale</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-tertiary: #1a1a1a;
+            --border-color: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --success: #22c55e;
+            --editor-bg: #0d0d0d;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .header {
+            height: 56px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent), #8b5cf6);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-family: inherit;
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .main-container {
+            display: flex;
+            height: calc(100vh - 56px);
+        }
+
+        .editor-panel {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+        }
+
+        .panel-tabs {
+            display: flex;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab {
+            padding: 12px 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .tab.active {
+            color: var(--text-primary);
+            border-bottom-color: var(--accent);
+            background: var(--bg-secondary);
+        }
+
+        .tab-icon {
+            font-size: 14px;
+        }
+
+        .editor-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .editor-wrapper {
+            position: absolute;
+            inset: 0;
+            display: none;
+        }
+
+        .editor-wrapper.active {
+            display: flex;
+        }
+
+        .line-numbers {
+            width: 50px;
+            background: var(--editor-bg);
+            padding: 16px 0;
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            user-select: none;
+            overflow: hidden;
+        }
+
+        .line-number {
+            padding-right: 16px;
+            height: 20.8px;
+        }
+
+        textarea.editor {
+            flex: 1;
+            background: var(--editor-bg);
+            border: none;
+            outline: none;
+            resize: none;
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            tab-size: 2;
+        }
+
+        textarea.editor::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        /* Preview Panel */
+        .preview-panel {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-primary);
+        }
+
+        .preview-header {
+            height: 45px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+        }
+
+        .preview-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .preview-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .preview-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .preview-btn:hover {
+            color: var(--text-primary);
+            border-color: var(--text-secondary);
+        }
+
+        .preview-frame-container {
+            flex: 1;
+            background: white;
+            position: relative;
+        }
+
+        #preview-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        .resizer {
+            width: 6px;
+            background: var(--border-color);
+            cursor: col-resize;
+            transition: background 0.2s ease;
+            position: relative;
+        }
+
+        .resizer:hover,
+        .resizer.dragging {
+            background: var(--accent);
+        }
+
+        .resizer::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 2px;
+            height: 40px;
+            background: var(--text-secondary);
+            border-radius: 1px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .resizer:hover::after {
+            opacity: 0.5;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            height: 28px;
+            background: var(--bg-tertiary);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .editor-panel,
+            .preview-panel {
+                width: 100%;
+                height: 50%;
+            }
+
+            .resizer {
+                width: 100%;
+                height: 6px;
+                cursor: row-resize;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">⚡</div>
+            <span>Learn Simple HTML with Jefdale</span>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="clearEditor()">Clear</button>
+            <button class="btn btn-primary" onclick="runCode()">Run ▶</button>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <section class="editor-panel">
+            <div class="panel-tabs">
+                <div class="tab active" data-tab="html">
+                    <span class="tab-icon">🔶</span>
+                    HTML
+                </div>
+                <div class="tab" data-tab="css">
+                    <span class="tab-icon">🔷</span>
+                    CSS
+                </div>
+                <div class="tab" data-tab="js">
+                    <span class="tab-icon">🟡</span>
+                    JavaScript
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-wrapper active" data-editor="html">
+                    <div class="line-numbers" id="html-lines"></div>
+                    <textarea class="editor" id="html-editor" placeholder="Write your HTML here..." spellcheck="false"></textarea>
+                </div>
+                <div class="editor-wrapper" data-editor="css">
+                    <div class="line-numbers" id="css-lines"></div>
+                    <textarea class="editor" id="css-editor" placeholder="Write your CSS here..." spellcheck="false"></textarea>
+                </div>
+                <div class="editor-wrapper" data-editor="js">
+                    <div class="line-numbers" id="js-lines"></div>
+                    <textarea class="editor" id="js-editor" placeholder="Write your JavaScript here..." spellcheck="false"></textarea>
+                </div>
+            </div>
+            <div class="status-bar">
+                <div class="status-item">
+                    <span>UTF-8</span>
+                </div>
+                <div class="status-item">
+                    <span id="cursor-position">Ln 1, Col 1</span>
+                </div>
+            </div>
+        </section>
+
+        <div class="resizer" id="resizer"></div>
+
+        <section class="preview-panel">
+            <div class="preview-header">
+                <div class="preview-title">
+                    <div class="preview-dot"></div>
+                    Live Preview
+                </div>
+                <div class="preview-actions">
+                    <button class="preview-btn" onclick="refreshPreview()" title="Refresh">↻</button>
+                    <button class="preview-btn" onclick="openInNewTab()" title="Open in new tab">↗</button>
+                </div>
+            </div>
+            <div class="preview-frame-container">
+                <iframe id="preview-frame" sandbox="allow-scripts allow-modals"></iframe>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const defaultHTML = `<div class="container">
+  <h1>Hello World!</h1>
+  <p>Start today! not tommorow</p>
+  <button onclick="showAlert()">Click Me</button>
+</div>`;
+
+        const defaultCSS = `* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.container {
+  text-align: center;
+  padding: 48px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+p {
+  color: #666;
+  margin-bottom: 24px;
+  font-size: 1.1rem;
+}
+
+button {
+  padding: 14px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+}`;
+
+        const defaultJS = `function showAlert() {
+  alert('Hello from Code Playground! 🚀');
+}
+
+console.log('JavaScript is running!');`;
+
+        const htmlEditor = document.getElementById('html-editor');
+        const cssEditor = document.getElementById('css-editor');
+        const jsEditor = document.getElementById('js-editor');
+        const previewFrame = document.getElementById('preview-frame');
+        const tabs = document.querySelectorAll('.tab');
+        const editorWrappers = document.querySelectorAll('.editor-wrapper');
+        const cursorPosition = document.getElementById('cursor-position');
+
+        htmlEditor.value = defaultHTML;
+        cssEditor.value = defaultCSS;
+        jsEditor.value = defaultJS;
+
+        function updateLineNumbers(editorId) {
+            const editor = document.getElementById(`${editorId}-editor`);
+            const lineNumbersContainer = document.getElementById(`${editorId}-lines`);
+            const lines = editor.value.split('\n').length;
+            
+            let lineNumbersHTML = '';
+            for (let i = 1; i <= Math.max(lines, 20); i++) {
+                lineNumbersHTML += `<div class="line-number">${i}</div>`;
+            }
+            lineNumbersContainer.innerHTML = lineNumbersHTML;
+        }
+
+        ['html', 'css', 'js'].forEach(updateLineNumbers);
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.dataset.tab;
+                
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                editorWrappers.forEach(wrapper => {
+                    wrapper.classList.remove('active');
+                    if (wrapper.dataset.editor === tabName) {
+                        wrapper.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        function runCode() {
+            const html = htmlEditor.value;
+            const css = cssEditor.value;
+            const js = jsEditor.value;
+
+            const fullCode = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <link rel="preconnect" href="https://fonts.googleapis.com">
+                    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+                    <style>${css}</style>
+                </head>
+                <body>
+                    ${html}
+                    <script>${js}<\/script>
+                </body>
+                </html>
+            `;
+
+            previewFrame.srcdoc = fullCode;
+        }
+
+        function refreshPreview() {
+            runCode();
+        }
+
+        function openInNewTab() {
+            const html = htmlEditor.value;
+            const css = cssEditor.value;
+            const js = jsEditor.value;
+
+            const fullCode = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <style>${css}</style>
+                </head>
+                <body>
+                    ${html}
+                    <script>${js}<\/script>
+                </body>
+                </html>
+            `;
+
+            const blob = new Blob([fullCode], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            window.open(url, '_blank');
+        }
+
+        function clearEditor() {
+            if (confirm('Are you sure you want to clear all code?')) {
+                htmlEditor.value = '';
+                cssEditor.value = '';
+                jsEditor.value = '';
+                ['html', 'css', 'js'].forEach(updateLineNumbers);
+                runCode();
+            }
+        }
+
+        let debounceTimer;
+        function debounceRun() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(runCode, 300);
+        }
+
+        [htmlEditor, cssEditor, jsEditor].forEach(editor => {
+            editor.addEventListener('input', () => {
+                const editorId = editor.id.replace('-editor', '');
+                updateLineNumbers(editorId);
+                debounceRun();
+            });
+
+            editor.addEventListener('scroll', () => {
+                const editorId = editor.id.replace('-editor', '');
+                const lineNumbers = document.getElementById(`${editorId}-lines`);
+                lineNumbers.scrollTop = editor.scrollTop;
+            });
+
+            editor.addEventListener('click', updateCursorPosition);
+            editor.addEventListener('keyup', updateCursorPosition);
+
+            function updateCursorPosition() {
+                const text = editor.value.substring(0, editor.selectionStart);
+                const lines = text.split('\n');
+                const line = lines.length;
+                const col = lines[lines.length - 1].length + 1;
+                cursorPosition.textContent = `Ln ${line}, Col ${col}`;
+            }
+
+            editor.addEventListener('keydown', (e) => {
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    const start = editor.selectionStart;
+                    const end = editor.selectionEnd;
+                    editor.value = editor.value.substring(0, start) + '  ' + editor.value.substring(end);
+                    editor.selectionStart = editor.selectionEnd = start + 2;
+                    const editorId = editor.id.replace('-editor', '');
+                    updateLineNumbers(editorId);
+                }
+            });
+        });
+
+        const resizer = document.getElementById('resizer');
+        const editorPanel = document.querySelector('.editor-panel');
+        const previewPanel = document.querySelector('.preview-panel');
+        let isResizing = false;
+
+        resizer.addEventListener('mousedown', (e) => {
+            isResizing = true;
+            resizer.classList.add('dragging');
+            document.body.style.cursor = 'col-resize';
+            document.body.style.userSelect = 'none';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            
+            const containerWidth = document.querySelector('.main-container').offsetWidth;
+            const newWidth = (e.clientX / containerWidth) * 100;
+            
+            if (newWidth > 20 && newWidth < 80) {
+                editorPanel.style.width = `${newWidth}%`;
+                previewPanel.style.width = `${100 - newWidth}%`;
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isResizing = false;
+            resizer.classList.remove('dragging');
+            document.body.style.cursor = '';
+            document.body.style.userSelect = '';
+        });
+
+        runCode();
+    </script>
+</body>
+</html>
